@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    parameters {
+        booleanParam (name: 'executeTests', defaultValue: true)
+    }
     stages {
         stage('checkout') {
             steps {
@@ -13,7 +15,12 @@ pipeline {
             }
         }
         stage('test') {
-            steps{
+            when {
+                expression {
+                    params.executeTests
+                }
+            }
+            steps {
                  bat '''py -m pip install --user virtualenv
                         py -m venv test-venv
                         call ./test-venv/Scripts/activate.bat
@@ -21,7 +28,6 @@ pipeline {
                         python -m pytest --junit-xml=xmlreport.xml'''
             }
         }
-
     }
     post {
         always {
