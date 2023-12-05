@@ -1,6 +1,7 @@
 pipeline {
     agent any
     parameters {
+        choice(name: 'TYPE', choices: ['ALL', 'UI', 'API'])
         booleanParam (name: 'executeTests', defaultValue: true)
     }
     stages {
@@ -14,10 +15,10 @@ pipeline {
                 git 'https://github.com/demchenko23/Python_TestProject.git'
             }
         }
-        stage('test') {
+        stage('ALL tests') {
             when {
                 expression {
-                    params.executeTests
+                    params.executeTests && params.TYPE == 'ALL'
                 }
             }
             steps {
@@ -26,6 +27,20 @@ pipeline {
                         call ./test-venv/Scripts/activate.bat
                         pip install -r requirements.txt
                         python -m pytest --junit-xml=xmlreport.xml'''
+            }
+        }
+        stage('UI tests') {
+            when {
+                expression {
+                    params.executeTests && params.TYPE == 'UI'
+                }
+            }
+            steps {
+                 bat '''py -m pip install --user virtualenv
+                        py -m venv test-venv
+                        call ./test-venv/Scripts/activate.bat
+                        pip install -r requirements.txt
+                        python -m pytest tests/ui_tests/ --junit-xml=xmlreport.xml'''
             }
         }
     }
