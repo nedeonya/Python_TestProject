@@ -43,6 +43,20 @@ pipeline {
                         python -m pytest tests/ui_tests/ --junit-xml=xmlreport.xml'''
             }
         }
+        stage('API tests') {
+            when {
+                expression {
+                    params.executeTests && params.TYPE == 'API'
+                }
+            }
+            steps {
+                 bat '''py -m pip install --user virtualenv
+                        py -m venv test-venv
+                        call ./test-venv/Scripts/activate.bat
+                        pip install -r requirements.txt
+                        python -m pytest tests/api_tests/ --junit-xml=xmlreport.xml'''
+            }
+        }
     }
     post {
         always {
