@@ -1,0 +1,5 @@
+full_name,email,phone_number,is_friend
+John Doe,john.doe@example.com,123-456-7890,true
+Jane Smith,jane.smith@example.com,987-654-3210,false
+Bob Johnson,bob.johnson@example.com,555-123-4567,true
+Alice Williams,alice.williams@example.com,999-888-7777,false
